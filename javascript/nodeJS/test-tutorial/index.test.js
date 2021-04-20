@@ -82,13 +82,34 @@ describe("complete()", function() {
 
 // Asynchrone Testing with async/await
 describe("saveToFileWithPromise()", function() {
-    it("should save a single TODO", async function() {
-        let todos = new Todos();
-        todos.add("save a CSV");
-       await todos.saveToFileWithPromise()
+    beforeEach(function () {
+        this.todos = new Todos();
+        this.todos.add("save a CSV");
+    });
+
+    afterEach(function () {
+        if (fs.existsSync("todos.csv")) {
+            fs.unlinkSync("todos.csv");
+        }
+    });
+
+    // !!! ADD this to bind your todos with those defined in beforeEach !!!
+    it("should save a single TODO without error", async function() {
+       await this.todos.saveToFileWithPromise()
         
        assert.strictEqual(fs.existsSync('todos.csv'), true);
         let expectedFileContents = "Title,Completed\nsave a CSV,false\n";
+        let content = fs.readFileSync("todos.csv").toString();
+        assert.strictEqual(content, expectedFileContents);
+    });
+
+    // Difference here is that we complete the todo
+    it("should save a single TODO that's completed", async function () {
+        this.todos.complete("save a CSV");
+        await this.todos.saveToFileWithPromise();
+
+        assert.strictEqual(fs.existsSync('todos.csv'), true);
+        let expectedFileContents = "Title,Completed\nsave a CSV,true\n";
         let content = fs.readFileSync("todos.csv").toString();
         assert.strictEqual(content, expectedFileContents);
     });

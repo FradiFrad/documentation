@@ -66,30 +66,34 @@ describe("integration test", function() {
 
 ### Assert module example functions
 
-- **`deepStrictEqual()`** teste récursivement que nos objets attendus et réels ont les mêmes propriétés. Dans le cas présent, elle vérifie que les tableaux que nous attendons ont tous deux un objet JavaScript en leur sein. Elle vérifie ensuite que leurs objets JavaScript ont les mêmes propriétés, c'est-à-dire que leurs propriétés title sont toutes deux "run code" et que les deux propriétés completed sont false
+#### `deepStrictEqual()`
 
-- **`throws()`** : to check the errors thrown into our code.
+Teste récursivement que nos objets attendus et réels ont les mêmes propriétés. Dans le cas présent, elle vérifie que les tableaux que nous attendons ont tous deux un objet JavaScript en leur sein. Elle vérifie ensuite que leurs objets JavaScript ont les mêmes propriétés, c'est-à-dire que leurs propriétés title sont toutes deux "run code" et que les deux propriétés completed sont false
 
-  - 1st arg : function with the code that launches the error
-  - 2nd arg : error we expect.
+#### `throws()`
 
-  ```
-  it("should fail if there are no TODOs", function() {
-    let todos = new Todos();
-    const expectedError = new Error("You have no TODOs stored. Why don't you add one first?");
+To check the errors thrown into our code.
 
-    assert.throws(() => {
-        todos.complete("doesn't exist");
-    }, expectedError);
-    });
-  ```
+- 1st arg : function with the code that launches the error
+- 2nd arg : error we expect.
 
-- **Async testing with callback** : to check async functions
+```
+it("should fail if there are no TODOs", function() {
+  let todos = new Todos();
+  const expectedError = new Error("You have no TODOs stored. Why don't you add one first?");
 
+  assert.throws(() => {
+      todos.complete("doesn't exist");
+  }, expectedError);
+  });
+```
+
+#### Asynchronous testing
+
+- **With callback**
   - Usually, the `it()` callback function has no argument. **But with async testing with callback it is** : it's `done`.
     ==> **`done()` callback is used by Mocha to know when an async function with callback is finished.**
-
-- **Warning** : you have to put your test code inside the callback function of the async function. Otherwise it will be executed BEFORE the file writing is done.
+  - **Warning** : you have to put your test code inside the callback function of the async function. Otherwise it will be executed BEFORE the file writing is done.
 
 ```
 describe("saveToFile()", function() {
@@ -115,7 +119,7 @@ describe("saveToFile()", function() {
 });
 ```
 
-- **Async testing with promises** : to check async functions with promises
+- **With promises** : to check async functions with promises
 
   - Here, we don't need the `it()` callback function argument anymore.
 
@@ -123,12 +127,36 @@ describe("saveToFile()", function() {
 
   - **Warning** : no need of `catch()` function because Mocha can detect by its own if a Promise is rejected and it will automatically fail the test.
 
-- **Async testing with async/await** :
+- **With async/await** :
 
   - Here, we don't need `then()`
 
   - **Warning** : add `async` before the callback function of `it()` and `await` before the promise function.
 
-**Sources** :
+### Mocha hooks
+
+- Hooks are a useful feature of Mocha that **allows us to configure the environment before and after a test**. 4 hooks :
+
+  - **`before()`**: This hook is run once before the first test begins.
+  - **`beforeEach()`**: This hook is run before every test case.
+  - **`after()`**: This hook is run once after the last test case is complete.
+  - **`afterEach()`**: This hook is run after every test case.
+
+- Example : Useful when you have to instantiate the same object over and over agin before each test. It becomes **repetitive and memory-wasteful**.
+  - We’ll use the `beforeEach()` hook to set up our **test fixture** of TODO items.
+  - **Warning** : `this` is the same for every code block inside the `describe()` block
+    ==> Powerful context sharing that allows us to write less code and **create test fixtures ised by all our tests**.
+
+```
+beforeEach(function () {
+    this.todos = new Todos();
+    this.todos.add("save a CSV");
+});
+```
+
+- We’ll use the `afterEach()` hook to remove the file created by the test.
+
+### Sources
 
 - [Comment tester un module Node.js avec Mocha et Assert](https://www.digitalocean.com/community/tutorials/how-to-test-a-node-js-module-with-mocha-and-assert-fr)
+- [Mocha Official doc]https://mochajs.org/#getting-started

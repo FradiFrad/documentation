@@ -1,2 +1,3 @@
 *.code-workspace
+*.git-credentials
 node_modules/

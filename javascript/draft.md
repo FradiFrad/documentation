@@ -400,3 +400,7 @@ https://infinitypaul.medium.com/reactjs-useeffect-usecallback-simplified-91e69fb
 ORM
 seqiuelize
 https://www.bitovi.com/blog/battle-of-the-node.js-orms-objection-prisma-sequelize
+
+
+--
+unitsToCheck.push(unit.split("").sort().join(""));

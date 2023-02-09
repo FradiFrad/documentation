@@ -1,54 +1,4 @@
-# History
-
-## 1995 : creation
-
-- Marc Andreessen (founder of Netscape Communications) wanted a **more dynamic web**.
-  - Creation of Mocha : Simple, dynamic, and accessible to non-developers.
-  - Then Mocha/LiveScript is renamed JavaScript.
-    - Marketing pressure explains the proximity with Java language, popular at the time.
-      - Javascript = a scripting language for small client-side tasks in the browser
-      - Java = promoted as a bigger, professional tool to develop rich web components.
-    - Born in a hurry
-
-## 1997 : maintenance in ECMA
-
-- Netscape handed the job of creating a language specification to the European Computer Manufacturers Association (ECMA), a body founded with the goal of standardizing computing.
-
-## 2005 : AJAX and the road to asynchronous times
-
-- A paper released by Jesse James Garrett introduced Ajax, a revolutionary suite of technologies that included JavaScript.
-- Ajax :
-
-  - Asynchronous JavaScript + XML
-  - a fundamental shift in what’s possible on the Web :
-    - classic web application model : most user actions in the interface trigger an HTTP request back to a web server. The server does some processing — retrieving data, crunching numbers, talking to various legacy systems — and then returns an HTML page to the client.
-      => synchronous : while the server is doing its thing, the user is waiting. "Start-stop-start-stop" nature of the interaction on the Web
-      => not a great user experience.
-    - Ajax model : an intermediary — an Ajax engine — between the user and the server. "Allows the user’s interaction with the application to happen asynchronously — independent of communication with the server."
-      => asynchronous : "the user is never staring at a blank browser window and an hourglass icon, waiting
-      around for the server to do something."
-      => best user experience
-
-- Result : JavaScript is seen as a more professional programming language.
-
-## 2015 : major features in ECMA
-
-- Take JavaScript to a bigger audience, and to aid in programming in the large.
-
-## Now
-
-- the most commonly used programming language (2019)
-- from client-side language (meaning it runs on your computer within your browser) to servers, with Node.js
-- It is now even possible to write native mobile apps using JavaScript.
-
-## Sources
-
-- https://www.springboard.com/blog/history-of-javascript/#:~:text=In%20September%201995%2C%20a%20Netscape,LiveScript%20and%2C%20later%2C%20JavaScript
-- https://immagic.com/eLibrary/ARCHIVES/GENERAL/ADTVPATH/A050218G.pdf AJAX 2005
-- https://medium.com/@_benaston/lesson-1a-the-history-of-javascript-8c1ce3bffb17
-- https://auth0.com/blog/a-brief-history-of-javascript/
-
-# How it works
+# Javascript: How it works? Event loop and asynchronous
 
 ## Single thread/synchronous by nature but asynchronous by tools
 
@@ -58,7 +8,7 @@
     ==> **Problem** : it can lead to **blocking issues** when some code takes time to be executed aka blocks this single thread
 - Solution : to avoid that, Javascript engine on browsers work with **"Event loop"** and have 2 mains tools : **callbacks** and **promises**
 
-### Event loop
+## Event loop
 
 - The "event loop" is a concurrency model
 - Consider Event loop as a loop that **executes code until there is no more code to execute**.
@@ -92,11 +42,10 @@
 
 - New style of async code that you'll see used in modern Web APIs. **Introduced by ES6** to make the job of writing asynchronous code easier.
 
-```
-    Main thread: Task A                   Task B
-        Promise:      |__async operation__|
-
-```
+  ```javascript
+      Main thread: Task A                   Task B
+          Promise:      |__async operation__|
+  ```
 
 ==> Since the operation is happening somewhere else (job queued), the main thread is not blocked while the async operation is being processed.
 
@@ -194,7 +143,6 @@
             ```
 
 - Consequences :
-
   - it looks like a classic syncrhonous code
   - you can assign while await value of a resolved promise to a variable
 
@@ -202,30 +150,121 @@
 
 - Error handling : if you put promises in try and catch, then the catch will catch all the rejected promises
 
-## Fundamental stuff
+### Fundamental stuff
 
 - Everything in JavaScript is an object. Even functions.
 - If functions are objects, then functions can be returned from functions and passed into functions as arguments.
 
-## Common rules
+### Common and essential rules
 
-- String values are immutable
-  - they cannot be altered once created.
+#### Strings and array mutability
 
-```javascript
-var myStr = "Bob";
-myStr[0] = "J"; // impossible
-```
+- String values are immutable : They cannot be altered once created. This does not mean that myStr cannot be changed, just that the individual characters of a string literal cannot be changed : you have to change the entire value of the string
 
-- This does not mean that myStr cannot be changed, just that the individual characters of a string literal cannot be changed : you have to change the entire value of the string
+  ```javascript
+  var myStr = "Bob";
+  myStr[0] = "J"; // impossible
+  ```
+
 - Unlike strings, the entries of arrays are mutable and can be changed freely.
 
-```javascript
-var myArray = [0, 1];
-myArray[0] = 2; // possible
-```
+  ```javascript
+  var myArray = [0, 1];
+  myArray[0] = 2; // possible
+  ```
 
-## Sources
+#### Objects
+
+- **[Destructuring assignment syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment)** :
+
+  - Definition: a JavaScript expression that makes it possible to **extract data from arrays or objects into distinct variables**.
+  - Ex:
+    ```javascript
+    const nums = [1, 2, 3];
+    Math.min(...nums); // 1
+    Math.max(...nums); // 3
+    ```
+  - Before / After this syntax comparison :
+
+    ```javascript
+    // BEFORE
+    let johnDoe = ["John", "Doe", "Iskolo"];
+    let firstName = johnDoe[0];
+    let lastName = johnDoe[1];
+    let title = johnDoe[2];
+    console.log(firstName, lastName, title); // John Doe Iskolo
+
+    // AFTER
+    let johnDoe = ["John", "Doe", "Iskolo"];
+    let [firstName, lastName] = johnDoe;
+    console.log(firstName, lastName); // John Doe
+    ```
+
+  - Useful to...
+
+    - **Assigning the rest of an array to a variable**
+      ```javascript
+      const [a, ...b] = [1, 2, 3];
+      console.log(a); // 1
+      console.log(b); // [2, 3]
+      ```
+    - **Basic variable assignment**
+
+      - With an array :
+
+      ```javascript
+      const foo = ["one", "two", "three"];
+      const [red, yellow, green] = foo;
+      console.log(red); // "one"
+      console.log(yellow); // "two"
+      console.log(green); // "three"
+      ```
+
+      - With an object :
+
+      ```javascript
+      const user = {
+        id: 42,
+        is_verified: true,
+      };
+      const { id, is_verified } = user;
+      console.log(id); // 42
+      console.log(is_verified); // true
+      ```
+
+    - Ignoring some returned values
+    - Copy object keys to another
+    - Copy an array into an other
+    - Pass object/array as functions arguments
+    - Looping through objects
+
+    ```javascript
+    let obj = {
+      firstName: "John",
+      lastName: "Doe",
+      title: "Iskolo",
+    };
+    Object.keys(obj).forEach((key) => {
+      console.log(`${key} : ${obj[key]}`);
+    });
+    ```
+
+  - There are a lot of things possible ! Check the link.
+
+- **[Remove a property from an Object](https://www.w3schools.com/howto/howto_js_remove_property_object.asp)** : `delete`
+
+  ```javascript
+  var person = {
+    firstName: "John",
+    lastName: "Doe",
+    age: 50,
+    eyeColor: "blue",
+  };
+  delete person.age;
+  // Before deletion: person.age = 50, after deletion, person.age = undefined
+  ```
+
+### Sources
 
 - https://medium.com/@_benaston/lesson-1b-javascript-fundamentals-380f601ba851
 - https://samimyaquby.medium.com/how-can-javascript-be-asynchronous-and-single-threaded-at-the-same-time-c13c99bb4703
@@ -235,3 +274,4 @@ myArray[0] = 2; // possible
 - https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Concepts
 - https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Promises
 - https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Async_await
+- https://www.digitalocean.com/community/tutorials/how-to-use-destructuring-assignment-in-javascript

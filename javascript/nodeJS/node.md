@@ -39,12 +39,16 @@
 - **Definition**: one of the most simple yet powerful ways to **create a web server**.
 
   - **[Routing](https://expressjs.com/en/guide/routing.html)** : refers to how an application’s endpoints (URIs) respond to client requests
+    - **WARNING**: on `post`requests, by default, `req.body` **is undefined**, and **is populated when you use body-parsing middleware** such as express.json() or express.urlencoded().
+
+   
   - **[Response methods](https://expressjs.com/en/guide/routing.html)** : the response object `res` has a lot of methods to define the response to send to the client.
   - **[Middlewares](https://expressjs.com/en/guide/using-middleware.html)** : 
   
-    > Functions that **have access to the request object `req`, the response object `res`, and the next middleware function** in the application’s request-response cycle. The next middleware function is commonly denoted by a variable named `next`
-    > Middleware has the ability to modify the req and res objects, run any code you wish, end the request and response cycle, and move onto the following functions.
-    > **WARNING**: note the order of your middleware, as **invoking the next() function is required in each preceding middleware**.
+    - Functions that **have access to the request object `req`, the response object `res`, and the next middleware function** in the application’s request-response cycle. The next middleware function is commonly denoted by a variable named `next`.
+    - Middleware has the ability to modify the req and res objects, run any code you wish, end the request and response cycle, and move onto the following functions.
+    - **WARNING**: note the order of your middleware, as **invoking the next() function is required in each preceding middleware**.
+    - **WARNING**: mind the order of your middlewares and routes!
     - ex:
 
     ```javascript
@@ -54,12 +58,14 @@
     const middleware1 = require("./middleware/middlewareName1.js");
     const middleware2 = require("./middleware/middlewareName2.js");
     
-    //
     const app = express();
 
     // List all middlewares to use before the routes
     app.use(middleware1);
     app.use(middleware2);
+
+    // for parsing application/json in req.body post
+    app.use(express.json()) 
 
     // List all routes
     app.get("/route1", function(req, res) {
@@ -234,3 +240,7 @@ return 'persons';
 
 - [Freecodecamp](https://www.freecodecamp.org/news/node-js-what-when-where-why-how-ab8424886e2/)
 - [Node guides](https://nodejs.org/en/docs/guides/)
+- [Exercices](http://nicholasjohnson.com/node/course/exercises/)
+
+
+
